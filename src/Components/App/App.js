@@ -9,7 +9,7 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {searchResults: [],
-                  playlistTracks: [{name: '', artist: '', album: '', id: '', uri:''}],
+                  playlistTracks: [],
                   playlistName: "Any String"};
 
     this.addTrack = this.addTrack.bind(this);
@@ -47,10 +47,10 @@ class App extends Component {
   }
 
   search(term) {
+    console.log(`This is the term you searched: ${term}`);
     Spotify.search(term).then(searchResults => {
       this.setState({searchResults: searchResults})
     });
-    console.log(`This is the term you searched: ${term}`);
   }
 
   render() {
