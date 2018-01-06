@@ -10,11 +10,10 @@ class App extends Component {
     super(props)
     this.state = {searchResults: [],
                   playlistTracks: [],
-                  playlistName: "Any String"};
+                };
 
     this.addTrack = this.addTrack.bind(this);
     this.removeTrack = this.removeTrack.bind(this);
-    this.updatePlaylistName = this.updatePlaylistName.bind(this);
     this.savePlaylist = this.savePlaylist.bind(this);
     this.search = this.search.bind(this);
   }
@@ -39,11 +38,19 @@ class App extends Component {
     });
     this.setState({playlistTracks: playlistItems});
   }
-  updatePlaylistName(name){
-    this.setState({playlistName: name});
-  }
-  savePlaylist(){
-    //let trackUris = [];
+  savePlaylist(playlistName){
+    let uriIDs = [];
+    this.state.playlistTracks.forEach(track => {
+      uriIDs.push(track.uri);
+    })
+    console.log(playlistName);
+    console.log(uriIDs);
+    Spotify.savePlaylist(playlistName, uriIDs);
+
+    this.setState({
+      playlistTracks: [],
+      searchResults: []
+    });
   }
 
   search(term) {
@@ -62,10 +69,8 @@ class App extends Component {
           <div className="App-playlist">
             <SearchResults searchResults={this.state.searchResults} onAdd={this.addTrack}/>
             <Playlist playlistTracks={this.state.playlistTracks}
-                      playlistName={this.state.playlistName}
-                      onRemove={this.state.removeTrack}
-                      onNameChange={this.updatePlaylistName}
-                      onSave={this.savePlayList}/>
+                      onRemove={this.removeTrack}
+                      onSave={this.savePlaylist}/>
           </div>
         </div>
       </div>
