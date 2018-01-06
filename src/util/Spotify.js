@@ -1,5 +1,5 @@
 const clientId = '05e6a527b9ab4c1c9b35e43e305fdb1e';
-const redirect = 'http://cashroyale.surge.sh';
+const redirect = 'http://cashroyale.surge.sh/';
 const authURL = 'https://accounts.spotify.com/authorize';
 const scope = 'playlist-modify-public';
 const apiSearchUrl = 'https://api.spotify.com/v1/search';
@@ -26,9 +26,9 @@ const Spotify = {
         console.log(Spotify.accessToken);
         console.log(Spotify.expires);
         window.setTimeout(() => Spotify.accessToken = '',Spotify.expires * 1000);
-        window.location.href = `${authURL}?client_id=${clientId}&redirect_uri=${redirect}&response_type=token&scope=${scope}`
         window.history.pushState('Access Token',null,'/');
       } else {
+        window.location.href = `${authURL}?client_id=${clientId}&redirect_uri=${redirect}&response_type=token&scope=${scope}`
       }
     }
     //return Spotify.accessToken;
