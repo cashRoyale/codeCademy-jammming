@@ -9,13 +9,14 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {searchResults: [],
-                  playlistTracks: [],
-                };
+      playlistTracks: [],
+    };
 
     this.addTrack = this.addTrack.bind(this);
     this.removeTrack = this.removeTrack.bind(this);
     this.savePlaylist = this.savePlaylist.bind(this);
     this.search = this.search.bind(this);
+    Spotify.authenticate();
   }
   addTrack(track) {
     let playlistItems = this.state.playlistTracks;
@@ -39,40 +40,49 @@ class App extends Component {
     this.setState({playlistTracks: playlistItems});
   }
   savePlaylist(playlistName){
-    let uriIDs = [];
-    this.state.playlistTracks.forEach(track => {
-      uriIDs.push(track.uri);
-    })
-    console.log(playlistName);
-    console.log(uriIDs);
-    Spotify.savePlaylist(playlistName, uriIDs);
+    if(Spotify.isLoggedIn()){
+      let uriIDs = [];
+      this.state.playlistTracks.forEach(track => {
+        uriIDs.push(track.uri);
+      })
+      console.log(playlistName);
+      console.log(uriIDs);
+      Spotify.savePlaylist(playlistName, uriIDs);
 
-    this.setState({
-      playlistTracks: [],
-      searchResults: []
-    });
+      this.setState({
+        playlistTracks: [],
+        searchResults: []
+      });
+    } else {
+      Spotify.authenticate();
+    }
   }
 
-  search(term) {
-    console.log(`This is the term you searched: ${term}`);
-    Spotify.search(term).then(searchResults => {
-      this.setState({searchResults: searchResults})
-    });
+  search(term,type) {
+    if(Spotify.isLoggedIn()){
+      console.log(`This is the term you searched: ${term}`);
+      console.log(`This is the type of search: ${type}`);
+      Spotify.search(term,type).then(searchResults => {
+        this.setState({searchResults: searchResults})
+      });
+    } else {
+      Spotify.authenticate();
+    }
   }
 
   render() {
     return (
       <div>
-        <h1>Ja<span className="highlight">mmm</span>ing</h1>
-        <div className="App">
-          <SearchBar onSearch={this.search}/>
-          <div className="App-playlist">
-            <SearchResults searchResults={this.state.searchResults} onAdd={this.addTrack}/>
-            <Playlist playlistTracks={this.state.playlistTracks}
-                      onRemove={this.removeTrack}
-                      onSave={this.savePlaylist}/>
-          </div>
-        </div>
+      <h1>Ja<span className="highlight">mmm</span>ing</h1>
+      <div className="App">
+      <SearchBar onSearch={this.search}/>
+      <div className="App-playlist">
+      <SearchResults searchResults={this.state.searchResults} onAdd={this.addTrack}/>
+      <Playlist playlistTracks={this.state.playlistTracks}
+      onRemove={this.removeTrack}
+      onSave={this.savePlaylist}/>
+      </div>
+      </div>
       </div>
     );
   }
