@@ -1,0 +1,24 @@
+Jamming Design 
+Feature Request
+January 17th 2018
+Link to Doc: https://docs.google.com/document/d/1niUQTgo2GdFwGEhq3TApByydDxwXyHEAdzfiQ0uWFYU/edit#
+
+OBJECTIVE
+Allow the user to select if they are searching for an Artist, Album or tracks based on the input field and return results with tracks to preview. Request the user authenticate with the Spotify app before using the app.
+
+BACKGROUND 
+The search field suggests entering artist,album, or song - but the results only return if the input is contained in the song. I wanted to allow another step for the user to specify exactly where they would want the values returned to come from. By returning the songs with a preview link the user can curate a more accurate playlist to there taste, in case they are unfamiliar with the songs that are returned.
+
+Since this app specifically uses the Spotify API, It seemed most logical to make sure the user was allowing access to the spotify app before even using the app. Otherwise the App would not work anyway, since the features rely solely on Spotify.
+
+TECHNICAL DESIGN
+CSS will need to be added to App,js for the new search selection options, as well as a new method to hold the users selection and send to the spotify search api to retrieve proper track information. To retrieve Spotify songs based on user search by selection we will need to dynamically adjust the ‘type’ field in the API Search URL.
+
+If the user wants anything other than song. We should only retrieve 1 item and return the most accurate to the search input. From here we will navigate through the api to extract the Album or Artist Id. Take the new Id and fetch the songs associated with the Id and return them with a preview URL.
+
+We need to alter the track component to also add a song preview screen using an iframe with src= track.uri. CSS will need to be manipulated to account for the extra data now housed in the Return Values field.
+Add a functionality so if the User hits ‘Enter’ the search is returned, but keep the functionality of a user clicking the search button.
+
+CAVEATS
+Check if the user is authenticated when the page loads. Always check when a user searches if the authentication has not expired. (I chose this since the app is reliant on the Spotify API - and only works if they are authenticated - if not authenticated they would not enjoy the App)
+Check if the user is authenticated when a search is performed. Always check when a user searches if the authentication has not expired.

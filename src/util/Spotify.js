@@ -1,5 +1,5 @@
 const clientId = '05e6a527b9ab4c1c9b35e43e305fdb1e';
-const redirect = 'http://localhost:3000/';
+const redirect = 'https://cashroyale.surge.sh';
 const authURL = 'https://accounts.spotify.com/authorize';
 const scope = 'playlist-modify-public';
 const apiSearchUrl = 'https://api.spotify.com/v1/search';
@@ -33,12 +33,12 @@ const Spotify = {
   },
 
   isLoggedIn(){
-    console.log(`Access Token: ${Spotify.accessToken}`);
-    console.log(`User Id: ${Spotify.user_id}`);
-    console.log(`Expires: ${new Date(Spotify.expires)}`);
-    console.log(`What Time is it now: ${new Date()}`);
-    console.log(Spotify.expires);
-    console.log(Spotify.expires > new Date().getTime());
+    //console.log(`Access Token: ${Spotify.accessToken}`);
+    //console.log(`User Id: ${Spotify.user_id}`);
+    //console.log(`Expires: ${new Date(Spotify.expires)}`);
+    //console.log(`What Time is it now: ${new Date()}`);
+    //console.log(Spotify.expires);
+    //console.log(Spotify.expires > new Date().getTime());
     if(Spotify.accessToken === null || Spotify.user_id === null){
       return false;
     }
@@ -51,21 +51,21 @@ const Spotify = {
   },
 
   getAccessToken(){
-    console.log('Fetching AccessToken...');
+    //console.log('Fetching AccessToken...');
     if (!Spotify.accessToken){
       const url = window.location.href;
       const accessTokenCode = url.match(/access_token=([^&]*)/);
       const expireTimeCode = url.match(/expires_in=([^&]*)/);
-      console.log(url);
-      console.log(accessTokenCode);
-      console.log(expireTimeCode);
+      //console.log(url);
+      //onsole.log(accessTokenCode);
+      //console.log(expireTimeCode);
       if(accessTokenCode && expireTimeCode) {
         this.accessToken = accessTokenCode[1];
         let expireIn = expireTimeCode[1];
         let time = new Date()
-        console.log(`Authenticated @: ${time}`);
+        //console.log(`Authenticated @: ${time}`);
         this.expires = time.setTime(+time + (+expireIn*1000));
-        console.log(`User access_token: ${this.accessToken}`);
+        //console.log(`User access_token: ${this.accessToken}`);
         console.log(`Authorization will expire @: ${new Date(time)}`);
         window.setTimeout(() => this.accessToken = '',expireIn*1000);
         window.history.pushState('Access Token',null,'/');
@@ -89,7 +89,7 @@ const Spotify = {
     } else {
       searchURL = `${apiSearchUrl}?type=${type}&q=${term}&limit=20`;
     }
-    console.log(searchURL);
+    //console.log(searchURL);
     console.log(`Looking up tracks that contain ${term} from ${type}...`);
     return fetch(`${searchURL}`, {
       headers: {
@@ -102,17 +102,17 @@ const Spotify = {
       console.log(jsonResponse);
       if(typeTF.artist){
         let artistId = jsonResponse.artists.items[0].id;
-        console.log(artistId);
+        //console.log(artistId);
         https://api.spotify.com/v1/artists/{id}/top-tracks
         return fetch(`https://api.spotify.com/v1/artists/${artistId}/top-tracks?country=US`,{
           headers: {
             Authorization: `Bearer ${Spotify.accessToken}`
           }
         }).then(response => {
-          console.log(response);
+          //console.log(response);
           return response.json();
         }).then(jsonResponse => {
-          console.log(jsonResponse);
+          //console.log(jsonResponse);
           return jsonResponse.tracks.map(track => ({
             id: track.id,
             name: track.name,
@@ -125,7 +125,7 @@ const Spotify = {
       }else if(typeTF.album){
         let albumId = jsonResponse.albums.items[0].id;
         let albumName = jsonResponse.albums.items[0].name;
-        console.log(albumId);
+        //console.log(albumId);
         return fetch(`https://api.spotify.com/v1/albums/${albumId}/tracks`,{
           headers: {
             Authorization: `Bearer ${Spotify.accessToken}`
@@ -157,7 +157,7 @@ const Spotify = {
     })
   },
   getUserId(){
-    console.log('Looking up User Id...');
+    //console.log('Looking up User Id...');
     return fetch(`${apiProfileUrl}`,{
       headers : {'Authorization': `Bearer ${Spotify.accessToken}`}
     }).then(response => {
@@ -169,19 +169,19 @@ const Spotify = {
         return;
       }
       Spotify.user_id = jsonResponse.id;
-      console.log(`User Id: ${Spotify.user_id}`);
+      //console.log(`User Id: ${Spotify.user_id}`);
     })
   },
   savePlaylist(playlistName,tracks){
     if(!playlistName || !tracks){
       return;
     }
-    console.log(`name: ${playlistName},
+    /*console.log(`name: ${playlistName},
       userid: ${Spotify.user_id},
       tracks: ${tracks},
       accessToken: ${Spotify.accessToken}`
-    );
-    console.log('Getting PlayList Id');
+    );*/
+    //console.log('Getting PlayList Id');
     return fetch(`${apiPlaylistUrl}${Spotify.user_id}/playlists`,{
       headers: {
         Authorization: `Bearer ${Spotify.accessToken}`,
@@ -205,8 +205,8 @@ const Spotify = {
       console.log(jsonResponse);
       if(jsonResponse.id){
         let playlist_id = jsonResponse.id;
-        console.log(`Playlist Id: ${playlist_id}`);
-        console.log('Write tracks to newly created playlist');
+        //console.log(`Playlist Id: ${playlist_id}`);
+        //console.log('Write tracks to newly created playlist');
         return fetch(`${apiPlaylistUrl}${Spotify.user_id}/playlists/${playlist_id}/tracks`, {
           method: 'POST',
           headers: {
